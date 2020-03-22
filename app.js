@@ -7,28 +7,53 @@ http.createServer(function(req,res){
     var urlObj=url.parse(req.url);
     if(urlObj.path=='/'){
         superagent.get('https://blz.bicoin.com.cn/settingFirmOffer/showAllLeaderList?pageSize=200&pageNum=1&sortType=8&sort=&type=future&searchName=')
-            .set({'Accept':'application/json,application/xml,application/xhtml+xml,text/html;q=0.9,image/webp,*/*;q=0.8'})
-            .set({'Accept-Encoding':'gzip, deflate'})
-            .set({'Accept-Language':'zh-CN,zh'})
-            .set({'Appversion':'2.4.0'})
-            .set({'Auth':'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNDc2NTk1NTEwNTcwNjQ3NTUyIiwiZXhwIjoxNTg1Mjg4MDY1fQ.MQoVayMwaxjVV7vAnkicsmQPl-HwMuHsLTJIy9kbVpw'})
-            .set({'Connection':'keep-alive'})
-            .set({'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'})
-            .set({'From':'Android'})
-            .set({'Logintime':'1583204331367'})
-            .set({'Mobilid':'AuKS2zOcXW1O0dFBl0z8-xVTqeNHqDpqFlhtSA8fDVXg'})
-            .set({'Mobilkey':'44109B0C5E4B3C5472CFA49242E8F95A'})
-            .set({'Redrisegreendown':'2'})
-            .set({'Token':'610435ff9510fb5b80bf703a1095d6e3'})
-            .set({'User-Agent':'Mozilla/5.0 (Linux; U; Android 6.0.1; zh-cn; MuMu Build/V417IR) AppleWebKit/533.1 (KHTML, like Gecko) Version/5.0 Mobile Safari/533.1'})
-            .set({'Usertempid':''})
-            .set({'Host':'blz.bicoin.com.cn'})
+            .set("Accept","application/json,application/xml,application/xhtml+xml,text/html;q=0.9,image/webp,*/*;q=0.8")
+            .set("Accept-Encoding","gzip, deflate")
+            .set("Accept-Language","zh-CN,zh")
+            .set("Appversion","2.4.0")
+            .set("Auth","eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNDc2NTk1NTEwNTcwNjQ3NTUyIiwiZXhwIjoxNTg3NDgzMTg5fQ.LNSMOstjXNsYPNGef2zR4XrRFkSdWN5kWUN1C9fzQdI")
+            .set("Connection","keep-alive")
+            .set("Content-Type","application/x-www-form-urlencoded; charset=UTF-8")
+            .set("From","Android")
+            .set("Logintime","1584891570654")
+            .set("Mobilid","AkYrhuQdYfnV9enZO0VxvW9F3Xwls-mwLEMbG7GJgbeV")
+            .set("Mobilkey","0D88AFA9559D02125A4F8823984C1589")
+            .set("Redrisegreendown","2")
+            .set("Token","9d0868ebbb46854266af9f8314992aeb")
+            .set("User-Agent","Mozilla/5.0 (Linux; U; Android 6.0.1; zh-cn; MuMu Build/V417IR) AppleWebKit/533.1 (KHTML, like Gecko) Version/5.0 Mobile Safari/533.1")
+            .set("Usertempid","")
+            .set("Host","blz.bicoin.com.cn")
             .end((err,response)=>{
                 let content = ''
                 let info = response.body.data;
-                superagent.get('http://112.124.201.164:9000/circle/getCircleContent?createUserId=5333')
+                superagent
+                .get('https://blz.bicoin.com.cn/msgHis/listHisMsg?typeStr=15&reqPage=1&pageSize=20')
+                .set("Accept","application/json,application/xml,application/xhtml+xml,text/html;q=0.9,image/webp,*/*;q=0.8")
+                .set("Accept-Encoding","gzip, deflate")
+                .set("Accept-Language","zh-CN,zh")
+                .set("Appversion","2.4.0")
+                .set("Auth","eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNDc2NTk1NTEwNTcwNjQ3NTUyIiwiZXhwIjoxNTg3NDgzMTg5fQ.LNSMOstjXNsYPNGef2zR4XrRFkSdWN5kWUN1C9fzQdI")
+                .set("Connection","keep-alive")
+                .set("Content-Type","application/x-www-form-urlencoded; charset=UTF-8")
+                .set("From","Android")
+                .set("Logintime","1584891570654")
+                .set("Mobilid","AkYrhuQdYfnV9enZO0VxvW9F3Xwls-mwLEMbG7GJgbeV")
+                .set("Mobilkey","0D88AFA9559D02125A4F8823984C1589")
+                .set("Redrisegreendown","2")
+                .set("Token","9d0868ebbb46854266af9f8314992aeb")
+                .set("User-Agent","Mozilla/5.0 (Linux; U; Android 6.0.1; zh-cn; MuMu Build/V417IR) AppleWebKit/533.1 (KHTML, like Gecko) Version/5.0 Mobile Safari/533.1")
+                .set("Usertempid","")
+                .set("Host","blz.bicoin.com.cn")
                 .end((err,response2)=>{
-                    let info2 = response2.body.data.threadList.filter((item,index,arr)=>item.dateline*1>(arr[index+1]||{dateline:0}).dateline*1)
+                    let list = response2.body.data.filter(x=>x.label=='半木夏').map(x=>{
+                        return {
+                            count:/成交【(\d+)张】/.exec(x.content)[1],
+                            sym:x.sym,
+                            labelSub:x.labelSub,
+                            unit:x.unit,
+                            cTime:x.cTime
+                        }
+                    })
                     content += `<section class="item">
                     <div class="header">
                         <img src="http://topcoin.oss-cn-hangzhou.aliyuncs.com/lr_headimg/75fac2373382ab813b397915e1ff1b29.JPEG">
@@ -37,16 +62,35 @@ http.createServer(function(req,res){
                             <span class="time">vx:jump_with_joy</span>
                         </div>
                     </div>
-                    ${info2.map((item,index)=>{
-                        let date = getTimeDiff(new Date(item.dateline*1000));
+                    ${list.map((item,index)=>{
+                        let date = getTimeDiff(new Date(item.cTime));
                         return `
                             <div class="contain ${index==0?'':'border_top'}">
-                                ${item.content.replace(/\n/g,'</br>').replace(/^<\/br>/,'')}
+                                ${item.labelSub}${item.count}张${item.sym},单价为${item.unit}
                                 <div style="text-align:right;color: #3064d8;" class="time">${date}</div>
                             </div>`
                         }).join('\n')
                     }
                     </section>`
+                    // let info2 = response2.body.data.threadList.filter((item,index,arr)=>item.dateline*1>(arr[index+1]||{dateline:0}).dateline*1)
+                    // content += `<section class="item">
+                    // <div class="header">
+                    //     <img src="http://topcoin.oss-cn-hangzhou.aliyuncs.com/lr_headimg/75fac2373382ab813b397915e1ff1b29.JPEG">
+                    //     <div>
+                    //         <div>南砚</div>
+                    //         <span class="time">vx:jump_with_joy</span>
+                    //     </div>
+                    // </div>
+                    // ${info2.map((item,index)=>{
+                    //     let date = getTimeDiff(new Date(item.dateline*1000));
+                    //     return `
+                    //         <div class="contain ${index==0?'':'border_top'}">
+                    //             ${item.content.replace(/\n/g,'</br>').replace(/^<\/br>/,'')}
+                    //             <div style="text-align:right;color: #3064d8;" class="time">${date}</div>
+                    //         </div>`
+                    //     }).join('\n')
+                    // }
+                    // </section>`
                     content += `${
                         info.filter(item=>!/半木夏/.test(item.leaderName)&&item.pointContent).map(item=>{
                             return `<section class="item ${/免费/.test(item.statusStr)?'freeX':''}">
