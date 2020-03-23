@@ -46,8 +46,12 @@ http.createServer(function(req,res){
                 .set("Host","blz.bicoin.com.cn")
                 .end((err,response2)=>{
                     let list = response2.body.data.filter(x=>x.label=='半木夏').map(x=>{
+                        let count = /成交【(\d+\.*\d*万*)张】/.exec(x.content)[1]
+                        if(count.indexOf('万')!=-1){
+                            count = /成交【(\d+\.*\d*)万张】/.exec(x.content)[1]*10000
+                        }
                         return {
-                            count:/成交【(\d+)张】/.exec(x.content)[1],
+                            count,
                             sym:x.sym,
                             labelSub:x.labelSub,
                             unit:x.unit,
@@ -66,7 +70,7 @@ http.createServer(function(req,res){
                         let date = getTimeDiff(new Date(item.cTime));
                         return `
                             <div class="contain ${index==0?'':'border_top'}">
-                                ${item.labelSub}${item.count}张${item.sym},单价为${item.unit}
+                                ${item.labelSub}【${item.count/20}手】${item.sym},单价为${item.unit}
                                 <div style="text-align:right;color: #3064d8;" class="time">${date}</div>
                             </div>`
                         }).join('\n')
